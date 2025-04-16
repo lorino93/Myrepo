@@ -1,0 +1,35 @@
+import numpy as np
+import matplotlib.pyplot as plt
+
+# Paramètres
+n_simulations = 100_000
+n_tosses = 200
+
+# Simuler n_simulations marches aléatoires de 200 lancers
+# +1 pour heads, -1 pour tails
+all_tosses = np.random.choice([-1, 1], size=(n_simulations, n_tosses))
+
+# Calculer W100 et W200 pour chaque simulation
+W100 = np.sum(all_tosses[:, :100], axis=1)
+W200 = np.sum(all_tosses, axis=1)
+
+# Sélectionner uniquement les cas où W100 = 12
+indices = np.where(W100 == 12)[0]
+W200_given_W100_12 = W200[indices]
+
+# Calculer l'espérance conditionnelle empirique
+empirical_mean = np.mean(W200_given_W100_12)
+
+# Afficher les résultats
+print(f"Nombre de cas où W100 = 12 : {len(W200_given_W100_12)}")
+print(f"Espérance empirique de W200 sachant W100 = 12 : {empirical_mean:.4f}")
+
+# Histogramme
+plt.hist(W200_given_W100_12, bins=40, alpha=0.7, color='skyblue', edgecolor='black')
+plt.axvline(empirical_mean, color='red', linestyle='--', label=f'Moyenne empirique = {empirical_mean:.2f}')
+plt.title("Distribution de W200 | W100 = 12")
+plt.xlabel("W200")
+plt.ylabel("Fréquence")
+plt.legend()
+plt.grid(True)
+plt.show()
